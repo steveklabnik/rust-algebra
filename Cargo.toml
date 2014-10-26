@@ -1,0 +1,21 @@
+[package]
+
+name    = "semigroup"
+version = "0.0.0"
+authors = [ "Darin Morrison <darinmorrison+rust@gmail.com>" ]
+
+[lib]
+name = "semigroup"
+path = "src/semigroup/mod.rs"
+
+# [dev-dependencies.criterion]
+# git = "https://github.com/japaric/criterion.rs"
+
+# [dev-dependencies.criterion_macros]
+# git = "https://github.com/japaric/criterion.rs"
+
+[dev-dependencies.quickcheck]
+git = "https://github.com/BurntSushi/quickcheck"
+
+[dev-dependencies.quickcheck_macros]
+git = "https://github.com/BurntSushi/quickcheck"
