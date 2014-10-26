@@ -1,0 +1,80 @@
+/target
+/Cargo.lock
+
+### https://raw.github.com/github/gitignore/408c616ae0ad8f4b8101d8e876b9b67ac6b14059/Global/Emacs.gitignore
+
+# -*- mode: gitignore; -*-
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+.\#*
+
+# Org-mode
+.org-id-locations
+*_archive
+
+# flymake-mode
+*_flymake.*
+
+# eshell files
+/eshell/history
+/eshell/lastdir
+
+# elpa packages
+/elpa/
+
+# reftex files
+*.rel
+
+# AUCTeX auto folder
+/auto/
+
+# cask packages
+.cask/
+
+
+### https://raw.github.com/github/gitignore/408c616ae0ad8f4b8101d8e876b9b67ac6b14059/Global/Linux.gitignore
+
+*~
+
+# KDE directory preferences
+.directory
+
+
+### https://raw.github.com/github/gitignore/408c616ae0ad8f4b8101d8e876b9b67ac6b14059/Global/Mercurial.gitignore
+
+/.hg/*
+*/.hg/*
+.hgignore
+
+
+### https://raw.github.com/github/gitignore/408c616ae0ad8f4b8101d8e876b9b67ac6b14059/Global/OSX.gitignore
+
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Icon must end with two \r
+Icon
+
+
+# Thumbnails
+._*
+
+# Files that might appear on external disk
+.Spotlight-V100
+.Trashes
+
+# Directories potentially created on remote AFP share
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+
+### https://raw.github.com/github/gitignore/408c616ae0ad8f4b8101d8e876b9b67ac6b14059/Global/SublimeText.gitignore
