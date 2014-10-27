@@ -1,4 +1,5 @@
 #![feature(phase)]
+#![feature(tuple_indexing)]
 
 // external crates
 extern crate quickcheck;
@@ -21,6 +22,7 @@ use semigroup::{
     Add,
     Mul,
     S,
+    Semigroup,
     SemigroupIterator,
     SemigroupPowNonZero,
 };
@@ -32,7 +34,7 @@ mod util;
 const ITERATIONS: uint = 10000u;
 
 #[quickcheck]
-fn associative(a:(uint,uint), b:(uint,uint), c:(uint,uint)) -> bool {
+fn op_associative(a:(uint,uint), b:(uint,uint), c:(uint,uint)) -> bool {
     let (al, ar) = a;
     let (bl, br) = b;
     let (cl, cr) = c;
@@ -43,7 +45,16 @@ fn associative(a:(uint,uint), b:(uint,uint), c:(uint,uint)) -> bool {
 }
 
 #[quickcheck]
-fn pownz_correct(a:(uint,uint)) -> bool {
+fn op_sound(a:(uint,uint), b:(uint,uint)) -> bool {
+    let (al, ar) = a;
+    let (bl, br) = b;
+    let a = (Add(al), Mul(ar));
+    let b = (Add(bl), Mul(br));
+    S(a) * S(b) == S((a.0.op(&b.0), a.1.op(&b.1)))
+}
+
+#[quickcheck]
+fn pownz_equiv_naive(a:(uint,uint)) -> bool {
     let (al, ar) = a;
     let a = (Add(al), Mul(ar));
     let g = &mut gen(rand::task_rng(), ITERATIONS);
@@ -52,7 +63,7 @@ fn pownz_correct(a:(uint,uint)) -> bool {
 }
 
 #[quickcheck]
-fn product_correct(a:(uint,uint), n:uint) -> bool {
+fn product_equiv_naive(a:(uint,uint), n:uint) -> bool {
     let (al, ar) = a;
     let a = (Add(al), Mul(ar));
     let mut it = iter::Repeat::new(a).take(n);

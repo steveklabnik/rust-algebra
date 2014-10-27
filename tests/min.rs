@@ -14,6 +14,7 @@ use quickcheck::{
     Arbitrary,
     gen,
 };
+use std::cmp;
 use std::iter;
 use std::rand;
 
@@ -32,19 +33,24 @@ mod util;
 const ITERATIONS: uint = 10000u;
 
 #[quickcheck]
-fn associative(a:uint, b:uint, c:uint) -> bool {
+fn op_associative(a:uint, b:uint, c:uint) -> bool {
     S(Min(a)) * (S(Min(b)) * S(Min(c))) == (S(Min(a)) * S(Min(b))) * S(Min(c))
 }
 
 #[quickcheck]
-fn pownz_correct(a:uint) -> bool {
+fn op_sound(a:uint, b:uint) -> bool {
+    S(Min(a)) * S(Min(b)) == S(Min(cmp::min(a,b)))
+}
+
+#[quickcheck]
+fn pownz_equiv_naive(a:uint) -> bool {
     let g = &mut gen(rand::task_rng(), ITERATIONS);
     let n = Arbitrary::arbitrary(g);
     Min(a).pownz(n) == util::pownz_naive(Min(a), n)
 }
 
 #[quickcheck]
-fn product_correct(a:uint, n:uint) -> bool {
+fn product_equiv_naive(a:uint, n:uint) -> bool {
     let mut it = iter::Repeat::new(Min(a)).take(n);
     it.clone().product(Min(a)) == util::product_naive(&mut it, Min(a))
 }

@@ -30,19 +30,26 @@ mod util;
 const ITERATIONS: uint = 100u;
 
 #[quickcheck]
-fn associative(a:String, b:String, c:String) -> bool {
+fn op_associative(a:String, b:String, c:String) -> bool {
     S(a.clone()) * (S(b.clone()) * S(c.clone())) == (S(a) * S(b)) * S(c)
 }
 
 #[quickcheck]
-fn pownz_correct(a:String) -> bool {
+fn op_sound(a:String, b:String) -> bool {
+    let mut c = a.clone();
+    c.push_str(b.clone().as_slice());
+    S(a) * S(b) == S(c)
+}
+
+#[quickcheck]
+fn pownz_equiv_naive(a:String) -> bool {
     let g = &mut gen(rand::task_rng(), ITERATIONS);
     let n = Arbitrary::arbitrary(g);
     a.clone().pownz(n) == util::pownz_naive(a, n)
 }
 
 #[quickcheck]
-fn product_correct(a:String, n:uint) -> bool {
+fn product_equiv_naive(a:String, n:uint) -> bool {
     let mut it = iter::Repeat::new(a.clone()).take(n);
     it.clone().product(a.clone()) == util::product_naive(&mut it, a)
 }

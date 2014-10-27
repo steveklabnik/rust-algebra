@@ -20,6 +20,7 @@ use std::rand;
 use semigroup::{
     Add,
     S,
+    Semigroup,
     SemigroupIterator,
     SemigroupPowNonZero,
 };
@@ -31,7 +32,7 @@ mod util;
 const ITERATIONS: uint = 10000u;
 
 #[quickcheck]
-fn associative(a:Option<uint>, b:Option<uint>, c:Option<uint>) -> bool {
+fn op_associative(a:Option<uint>, b:Option<uint>, c:Option<uint>) -> bool {
     let a = a.map(|x| Add(x));
     let b = b.map(|x| Add(x));
     let c = c.map(|x| Add(x));
@@ -39,7 +40,20 @@ fn associative(a:Option<uint>, b:Option<uint>, c:Option<uint>) -> bool {
 }
 
 #[quickcheck]
-fn pownz_correct(a:Option<uint>) -> bool {
+fn op_sound(a:Option<uint>, b:Option<uint>) -> bool {
+    let oa = a.map(|x| Add(x));
+    let ob = b.map(|x| Add(x));
+    S(oa) * S(ob) == match oa {
+        None        => { S(ob) },
+        Some(a)     => { match ob {
+            None    => { S(oa) },
+            Some(b) => { S(Some(a.op(&b))) },
+        }},
+    }
+}
+
+#[quickcheck]
+fn pownz_equiv_naive(a:Option<uint>) -> bool {
     let a = a.map(|x| Add(x));
     let g = &mut gen(rand::task_rng(), ITERATIONS);
     let n = Arbitrary::arbitrary(g);
@@ -47,7 +61,7 @@ fn pownz_correct(a:Option<uint>) -> bool {
 }
 
 #[quickcheck]
-fn product_correct(a:Option<uint>, n:uint) -> bool {
+fn product_equiv_naive(a:Option<uint>, n:uint) -> bool {
     let a = a.map(|x| Add(x));
     let mut it = iter::Repeat::new(a).take(n);
     it.clone().product(a) == util::product_naive(&mut it, a)

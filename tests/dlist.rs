@@ -33,7 +33,7 @@ mod util;
 const ITERATIONS: uint = 100u;
 
 #[quickcheck]
-fn associative(a:Vec<uint>, b:Vec<uint>, c:Vec<uint>) -> bool {
+fn op_associative(a:Vec<uint>, b:Vec<uint>, c:Vec<uint>) -> bool {
     let a: DList<uint> = a.into_iter().collect();
     let b: DList<uint> = b.into_iter().collect();
     let c: DList<uint> = c.into_iter().collect();
@@ -41,7 +41,16 @@ fn associative(a:Vec<uint>, b:Vec<uint>, c:Vec<uint>) -> bool {
 }
 
 #[quickcheck]
-fn pownz_correct(a:Vec<uint>) -> bool {
+fn op_sound(a:Vec<uint>, b:Vec<uint>) -> bool {
+    let a: DList<uint> = a.into_iter().collect();
+    let b: DList<uint> = b.into_iter().collect();
+    let mut c = a.clone();
+    c.extend(b.iter().map(|&x| x));
+    S(a) * S(b) == S(c)
+}
+
+#[quickcheck]
+fn pownz_equiv_naive(a:Vec<uint>) -> bool {
     let a: DList<uint> = a.into_iter().collect();
     let g = &mut gen(rand::task_rng(), ITERATIONS);
     let n = Arbitrary::arbitrary(g);
@@ -49,7 +58,7 @@ fn pownz_correct(a:Vec<uint>) -> bool {
 }
 
 #[quickcheck]
-fn product_correct(a:Vec<uint>, n:uint) -> bool {
+fn product_equiv_naive(a:Vec<uint>, n:uint) -> bool {
     let a: DList<uint> = a.into_iter().collect();
     let mut it = iter::Repeat::new(a.clone()).take(n);
     it.clone().product(a.clone()) == util::product_naive(&mut it, a)

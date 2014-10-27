@@ -32,19 +32,24 @@ mod util;
 const ITERATIONS: uint = 10000u;
 
 #[quickcheck]
-fn associative(a:uint, b:uint, c:uint) -> bool {
+fn op_associative(a:uint, b:uint, c:uint) -> bool {
     S(Fst(a)) * (S(Fst(b)) * S(Fst(c))) == (S(Fst(a)) * S(Fst(b))) * S(Fst(c))
 }
 
 #[quickcheck]
-fn pownz_correct(a:uint) -> bool {
+fn op_sound(a:uint, b:uint) -> bool {
+    S(Fst(a)) * S(Fst(b)) == S(Fst(a))
+}
+
+#[quickcheck]
+fn pownz_equiv_naive(a:uint) -> bool {
     let g = &mut gen(rand::task_rng(), ITERATIONS);
     let n = Arbitrary::arbitrary(g);
     Fst(a).pownz(n) == util::pownz_naive(Fst(a), n)
 }
 
 #[quickcheck]
-fn product_correct(a:uint, n:uint) -> bool {
+fn product_equiv_naive(a:uint, n:uint) -> bool {
     let mut it = iter::Repeat::new(Fst(a)).take(n);
     it.clone().product(Fst(a)) == util::product_naive(&mut it, Fst(a))
 }
