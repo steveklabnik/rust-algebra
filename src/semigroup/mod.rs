@@ -1,9 +1,7 @@
 #![crate_name="semigroup"]
 #![crate_type="rlib"]
 
-#![feature(overloaded_calls)]
 #![feature(phase)]
-#![feature(slicing_syntax)]
 
 // external crates
 extern crate collections;
