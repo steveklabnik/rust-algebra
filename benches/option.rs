@@ -18,6 +18,7 @@ use std::f64;
 // local imports
 use semigroup::{
     Add,
+    Semigroup,
     SemigroupIterator,
     SemigroupPowNonZero,
 };
@@ -30,49 +31,63 @@ const ELEM: Option<Add<f64>> = Some(Add(f64::consts::PI));
 const ITERATIONS: uint = 10000u;
 
 #[bench]
-fn pownz_naive(b:&mut test::Bencher) {
-    let r = util::seeded_rng();
-    let g = &mut quickcheck::gen(r, quickcheck::DEFAULT_SIZE);
-    let a: Option    <f64>  = Arbitrary::arbitrary(g);
+fn op(bencher:&mut test::Bencher) {
+    let rng = util::seeded_rng();
+    let gen = &mut quickcheck::gen(rng, quickcheck::DEFAULT_SIZE);
+    let a:  Option    <f64>  =  Arbitrary::arbitrary(gen);
+    let a:  Option<Add<f64>> =  a.map(|x| Add(x));
+    let b:  Option    <f64>  =  Arbitrary::arbitrary(gen);
+    let b: &Option<Add<f64>> = &b.map(|x| Add(x));
+    let task = || {
+        a.op(b)
+    };
+    bencher.iter(task);
+}
+
+#[bench]
+fn pownz_naive(bencher:&mut test::Bencher) {
+    let rng = util::seeded_rng();
+    let gen = &mut quickcheck::gen(rng, quickcheck::DEFAULT_SIZE);
+    let a: Option    <f64>  = Arbitrary::arbitrary(gen);
     let a: Option<Add<f64>> = a.map(|x| Add(x));
     let task = || {
         util::pownz_naive(a, ITERATIONS)
     };
-    b.iter(task);
+    bencher.iter(task);
 }
 
 #[bench]
-fn pownz(b:&mut test::Bencher) {
-    let r = util::seeded_rng();
-    let g = &mut quickcheck::gen(r, quickcheck::DEFAULT_SIZE);
-    let a: Option    <f64>  = Arbitrary::arbitrary(g);
+fn pownz(bencher:&mut test::Bencher) {
+    let rng = util::seeded_rng();
+    let gen = &mut quickcheck::gen(rng, quickcheck::DEFAULT_SIZE);
+    let a: Option    <f64>  = Arbitrary::arbitrary(gen);
     let a: Option<Add<f64>> = a.map(|x| Add(x));
     let task = || {
         a.pownz(ITERATIONS)
     };
-    b.iter(task);
+    bencher.iter(task);
 }
 
 #[bench]
-fn product_naive(b:&mut test::Bencher) {
-    let r = util::seeded_rng();
-    let g = &mut quickcheck::gen(r, ITERATIONS);
-    let xs: Vec<Option<f64>> = Arbitrary::arbitrary(g);
+fn product_naive(bencher:&mut test::Bencher) {
+    let rng = util::seeded_rng();
+    let gen = &mut quickcheck::gen(rng, ITERATIONS);
+    let xs: Vec<Option<f64>> = Arbitrary::arbitrary(gen);
     let mut it = xs.iter().map(|&x| x.map(|x| Add(x)));
     let task = || {
         util::product_naive(&mut it, ELEM)
     };
-    b.iter(task);
+    bencher.iter(task);
 }
 
 #[bench]
-fn product(b:&mut test::Bencher) {
-    let r = util::seeded_rng();
-    let g = &mut quickcheck::gen(r, ITERATIONS);
-    let xs: Vec<Option<f64>> = Arbitrary::arbitrary(g);
+fn product(bencher:&mut test::Bencher) {
+    let rng = util::seeded_rng();
+    let gen = &mut quickcheck::gen(rng, ITERATIONS);
+    let xs: Vec<Option<f64>> = Arbitrary::arbitrary(gen);
     let mut it = xs.iter().map(|&x| x.map(|x| Add(x)));
     let task = || {
         it.product(ELEM)
     };
-    b.iter(task);
+    bencher.iter(task);
 }

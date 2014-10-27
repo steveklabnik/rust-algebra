@@ -16,6 +16,7 @@ use quickcheck::{
 
 // local imports
 use semigroup::{
+    Semigroup,
     SemigroupIterator,
     SemigroupPowNonZero,
 };
@@ -33,47 +34,59 @@ fn ELEM() -> String {
 }
 
 #[bench]
-fn pownz_naive(b:&mut test::Bencher) {
-    let r = util::seeded_rng();
-    let g = &mut quickcheck::gen(r, quickcheck::DEFAULT_SIZE);
-    let sx: String = Arbitrary::arbitrary(g);
+fn op(bencher:&mut test::Bencher) {
+    let rng = util::seeded_rng();
+    let gen = &mut quickcheck::gen(rng, quickcheck::DEFAULT_SIZE);
+    let a:  String =  Arbitrary::arbitrary(gen);
+    let b: &String = &Arbitrary::arbitrary(gen);
     let task = || {
-        util::pownz_naive(sx.clone(), ITERATIONS)
+        a.op(b)
     };
-    b.iter(task);
+    bencher.iter(task);
 }
 
 #[bench]
-fn pownz(b:&mut test::Bencher) {
-    let r = util::seeded_rng();
-    let g = &mut quickcheck::gen(r, quickcheck::DEFAULT_SIZE);
-    let sx: String = Arbitrary::arbitrary(g);
+fn pownz_naive(bencher:&mut test::Bencher) {
+    let rng = util::seeded_rng();
+    let gen = &mut quickcheck::gen(rng, quickcheck::DEFAULT_SIZE);
+    let a: String = Arbitrary::arbitrary(gen);
     let task = || {
-        sx.clone().pownz(ITERATIONS)
+        util::pownz_naive(a.clone(), ITERATIONS)
     };
-    b.iter(task);
+    bencher.iter(task);
 }
 
 #[bench]
-fn product_naive(b:&mut test::Bencher) {
-    let r = util::seeded_rng();
-    let g = &mut quickcheck::gen(r, ITERATIONS);
-    let xs: Vec<String> = Arbitrary::arbitrary(g);
+fn pownz(bencher:&mut test::Bencher) {
+    let rng = util::seeded_rng();
+    let gen = &mut quickcheck::gen(rng, quickcheck::DEFAULT_SIZE);
+    let a: String = Arbitrary::arbitrary(gen);
+    let task = || {
+        a.clone().pownz(ITERATIONS)
+    };
+    bencher.iter(task);
+}
+
+#[bench]
+fn product_naive(bencher:&mut test::Bencher) {
+    let rng = util::seeded_rng();
+    let gen = &mut quickcheck::gen(rng, ITERATIONS);
+    let xs: Vec<String> = Arbitrary::arbitrary(gen);
     let mut it = xs.into_iter();
     let task = || {
         util::product_naive(&mut it, ELEM())
     };
-    b.iter(task);
+    bencher.iter(task);
 }
 
 #[bench]
-fn product(b:&mut test::Bencher) {
-    let r = util::seeded_rng();
-    let g = &mut quickcheck::gen(r, ITERATIONS);
-    let xs: Vec<String> = Arbitrary::arbitrary(g);
+fn product(bencher:&mut test::Bencher) {
+    let rng = util::seeded_rng();
+    let gen = &mut quickcheck::gen(rng, ITERATIONS);
+    let xs: Vec<String> = Arbitrary::arbitrary(gen);
     let mut it = xs.into_iter();
     let task = || {
         it.product(ELEM())
     };
-    b.iter(task);
+    bencher.iter(task);
 }

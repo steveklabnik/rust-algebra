@@ -21,6 +21,7 @@ use std::iter;
 
 // local imports
 use semigroup::{
+    Semigroup,
     SemigroupIterator,
     SemigroupPowNonZero,
 };
@@ -38,34 +39,48 @@ fn ELEM() -> RingBuf<f64> {
 }
 
 #[bench]
-fn pownz_naive(b:&mut test::Bencher) {
-    let r = util::seeded_rng();
-    let g = &mut quickcheck::gen(r, quickcheck::DEFAULT_SIZE);
-    let sx: Vec    <f64> = Arbitrary::arbitrary(g);
-    let sx: RingBuf<f64> = sx.into_iter().collect();
+fn op(bencher:&mut test::Bencher) {
+    let rng = util::seeded_rng();
+    let gen = &mut quickcheck::gen(rng, quickcheck::DEFAULT_SIZE);
+    let a:  Vec    <f64> =  Arbitrary::arbitrary(gen);
+    let b:  Vec    <f64> =  Arbitrary::arbitrary(gen);
+    let a:  RingBuf<f64> =  a.into_iter().collect();
+    let b: &RingBuf<f64> = &b.into_iter().collect();
     let task = || {
-        util::pownz_naive(sx.clone(), ITERATIONS)
+        a.op(b)
     };
-    b.iter(task);
+    bencher.iter(task);
 }
 
 #[bench]
-fn pownz(b:&mut test::Bencher) {
-    let r = util::seeded_rng();
-    let g = &mut quickcheck::gen(r, quickcheck::DEFAULT_SIZE);
-    let sx: Vec    <f64> = Arbitrary::arbitrary(g);
-    let sx: RingBuf<f64> = sx.into_iter().collect();
+fn pownz_naive(bencher:&mut test::Bencher) {
+    let rng = util::seeded_rng();
+    let gen = &mut quickcheck::gen(rng, quickcheck::DEFAULT_SIZE);
+    let a: Vec    <f64> = Arbitrary::arbitrary(gen);
+    let a: RingBuf<f64> = a.into_iter().collect();
     let task = || {
-        sx.clone().pownz(ITERATIONS)
+        util::pownz_naive(a.clone(), ITERATIONS)
     };
-    b.iter(task);
+    bencher.iter(task);
 }
 
 #[bench]
-fn product_naive(b:&mut test::Bencher) {
-    let r = util::seeded_rng();
-    let g = &mut quickcheck::gen(r, ITERATIONS);
-    let xs: Vec    <Vec    <f64>> = Arbitrary::arbitrary(g);
+fn pownz(bencher:&mut test::Bencher) {
+    let rng = util::seeded_rng();
+    let gen = &mut quickcheck::gen(rng, quickcheck::DEFAULT_SIZE);
+    let a: Vec    <f64> = Arbitrary::arbitrary(gen);
+    let a: RingBuf<f64> = a.into_iter().collect();
+    let task = || {
+        a.clone().pownz(ITERATIONS)
+    };
+    bencher.iter(task);
+}
+
+#[bench]
+fn product_naive(bencher:&mut test::Bencher) {
+    let rng = util::seeded_rng();
+    let gen = &mut quickcheck::gen(rng, ITERATIONS);
+    let xs: Vec    <Vec    <f64>> = Arbitrary::arbitrary(gen);
     let xs: RingBuf<RingBuf<f64>> = xs
         .into_iter()
         .map(|x| x.into_iter().collect())
@@ -74,14 +89,14 @@ fn product_naive(b:&mut test::Bencher) {
     let task = || {
         util::product_naive(&mut it, ELEM())
     };
-    b.iter(task);
+    bencher.iter(task);
 }
 
 #[bench]
-fn product(b:&mut test::Bencher) {
-    let r = util::seeded_rng();
-    let g = &mut quickcheck::gen(r, ITERATIONS);
-    let xs: Vec    <Vec    <f64>> = Arbitrary::arbitrary(g);
+fn product(bencher:&mut test::Bencher) {
+    let rng = util::seeded_rng();
+    let gen = &mut quickcheck::gen(rng, ITERATIONS);
+    let xs: Vec    <Vec    <f64>> = Arbitrary::arbitrary(gen);
     let xs: RingBuf<RingBuf<f64>> = xs
         .into_iter()
         .map(|x| x.into_iter().collect())
@@ -90,5 +105,5 @@ fn product(b:&mut test::Bencher) {
     let task = || {
         it.product(ELEM())
     };
-    b.iter(task);
+    bencher.iter(task);
 }

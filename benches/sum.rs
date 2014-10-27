@@ -19,6 +19,7 @@ use std::f64;
 use semigroup::{
     Add,
     Mul,
+    Semigroup,
     SemigroupIterator,
     SemigroupPowNonZero,
 };
@@ -31,38 +32,56 @@ const ELEM: Result<Add<f64>,Mul<f64>> = Ok(Add(f64::consts::PI));
 const ITERATIONS: uint = 10000u;
 
 #[bench]
-fn pownz_naive(b:&mut test::Bencher) {
-    let r = util::seeded_rng();
-    let g = &mut quickcheck::gen(r, quickcheck::DEFAULT_SIZE);
-    let a: Result<    f64 ,    f64>  = Arbitrary::arbitrary(g);
+fn op(bencher:&mut test::Bencher) {
+    let rng = util::seeded_rng();
+    let gen = &mut quickcheck::gen(rng, quickcheck::DEFAULT_SIZE);
+    let a:  Result<    f64 ,    f64>  =  Arbitrary::arbitrary(gen);
+    let a:  Result<Add<f64>,Mul<f64>> =  a
+        .map    (|x| Add(x))
+        .map_err(|y| Mul(y));
+    let b:  Result<    f64 ,    f64>  =  Arbitrary::arbitrary(gen);
+    let b: &Result<Add<f64>,Mul<f64>> = &b
+        .map    (|x| Add(x))
+        .map_err(|y| Mul(y));
+    let task = || {
+        a.op(b)
+    };
+    bencher.iter(task);
+}
+
+#[bench]
+fn pownz_naive(bencher:&mut test::Bencher) {
+    let rng = util::seeded_rng();
+    let gen = &mut quickcheck::gen(rng, quickcheck::DEFAULT_SIZE);
+    let a: Result<    f64 ,    f64>  = Arbitrary::arbitrary(gen);
     let a: Result<Add<f64>,Mul<f64>> = a
         .map    (|x| Add(x))
         .map_err(|y| Mul(y));
     let task = || {
         util::pownz_naive(a, ITERATIONS)
     };
-    b.iter(task);
+    bencher.iter(task);
 }
 
 #[bench]
-fn pownz(b:&mut test::Bencher) {
-    let r = util::seeded_rng();
-    let g = &mut quickcheck::gen(r, quickcheck::DEFAULT_SIZE);
-    let a: Result<    f64 ,    f64>  = Arbitrary::arbitrary(g);
+fn pownz(bencher:&mut test::Bencher) {
+    let rng = util::seeded_rng();
+    let gen = &mut quickcheck::gen(rng, quickcheck::DEFAULT_SIZE);
+    let a: Result<    f64 ,    f64>  = Arbitrary::arbitrary(gen);
     let a: Result<Add<f64>,Mul<f64>> = a
-            .map    (|x| Add(x))
-            .map_err(|y| Mul(y));
+        .map    (|x| Add(x))
+        .map_err(|y| Mul(y));
     let task = || {
         a.pownz(ITERATIONS)
     };
-    b.iter(task);
+    bencher.iter(task);
 }
 
 #[bench]
-fn product_naive(b:&mut test::Bencher) {
-    let r = util::seeded_rng();
-    let g = &mut quickcheck::gen(r, ITERATIONS);
-    let xs: Vec<Result<f64,f64>> = Arbitrary::arbitrary(g);
+fn product_naive(bencher:&mut test::Bencher) {
+    let rng = util::seeded_rng();
+    let gen = &mut quickcheck::gen(rng, ITERATIONS);
+    let xs: Vec<Result<f64,f64>> = Arbitrary::arbitrary(gen);
     let mut it = xs.into_iter()
         .map(|s| s
             .map    (|x| Add(x))
@@ -70,14 +89,14 @@ fn product_naive(b:&mut test::Bencher) {
     let task = || {
         util::product_naive(&mut it, ELEM)
     };
-    b.iter(task);
+    bencher.iter(task);
 }
 
 #[bench]
-fn product(b:&mut test::Bencher) {
-    let r = util::seeded_rng();
-    let g = &mut quickcheck::gen(r, ITERATIONS);
-    let xs: Vec<Result<f64,f64>> = Arbitrary::arbitrary(g);
+fn product(bencher:&mut test::Bencher) {
+    let rng = util::seeded_rng();
+    let gen = &mut quickcheck::gen(rng, ITERATIONS);
+    let xs: Vec<Result<f64,f64>> = Arbitrary::arbitrary(gen);
     let mut it = xs.into_iter()
         .map(|s| s
             .map    (|x| Add(x))
@@ -85,5 +104,5 @@ fn product(b:&mut test::Bencher) {
     let task = || {
         it.product(ELEM)
     };
-    b.iter(task);
+    bencher.iter(task);
 }
