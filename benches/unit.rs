@@ -13,7 +13,6 @@ extern crate semigroup;
 use quickcheck::{
     Arbitrary,
 };
-use std::rand;
 
 // local imports
 use semigroup::{
@@ -30,7 +29,7 @@ const ITERATIONS: uint = 10000u;
 
 #[bench]
 fn pownz_naive(b:&mut test::Bencher) {
-    let r = rand::task_rng();
+    let r = util::seeded_rng();
     let g = &mut quickcheck::gen(r, quickcheck::DEFAULT_SIZE);
     let sx: () = Arbitrary::arbitrary(g);
     let task = || {
@@ -41,7 +40,7 @@ fn pownz_naive(b:&mut test::Bencher) {
 
 #[bench]
 fn pownz(b:&mut test::Bencher) {
-    let r = rand::task_rng();
+    let r = util::seeded_rng();
     let g = &mut quickcheck::gen(r, quickcheck::DEFAULT_SIZE);
     let sx: () = Arbitrary::arbitrary(g);
     let task = || {
@@ -52,7 +51,7 @@ fn pownz(b:&mut test::Bencher) {
 
 #[bench]
 fn product_naive(b:&mut test::Bencher) {
-    let r = rand::task_rng();
+    let r = util::seeded_rng();
     let g = &mut quickcheck::gen(r, ITERATIONS);
     let xs: Vec<()> = Arbitrary::arbitrary(g);
     let mut it = xs.iter().map(|&x| x);
@@ -64,7 +63,7 @@ fn product_naive(b:&mut test::Bencher) {
 
 #[bench]
 fn product(b:&mut test::Bencher) {
-    let r = rand::task_rng();
+    let r = util::seeded_rng();
     let g = &mut quickcheck::gen(r, ITERATIONS);
     let xs: Vec<()> = Arbitrary::arbitrary(g);
     let mut it = xs.iter().map(|&x| x);

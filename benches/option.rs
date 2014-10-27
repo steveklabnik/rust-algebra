@@ -14,7 +14,6 @@ use quickcheck::{
     Arbitrary,
 };
 use std::f64;
-use std::rand;
 
 // local imports
 use semigroup::{
@@ -32,7 +31,7 @@ const ITERATIONS: uint = 10000u;
 
 #[bench]
 fn pownz_naive(b:&mut test::Bencher) {
-    let r = rand::task_rng();
+    let r = util::seeded_rng();
     let g = &mut quickcheck::gen(r, quickcheck::DEFAULT_SIZE);
     let a: Option    <f64>  = Arbitrary::arbitrary(g);
     let a: Option<Add<f64>> = a.map(|x| Add(x));
@@ -44,7 +43,7 @@ fn pownz_naive(b:&mut test::Bencher) {
 
 #[bench]
 fn pownz(b:&mut test::Bencher) {
-    let r = rand::task_rng();
+    let r = util::seeded_rng();
     let g = &mut quickcheck::gen(r, quickcheck::DEFAULT_SIZE);
     let a: Option    <f64>  = Arbitrary::arbitrary(g);
     let a: Option<Add<f64>> = a.map(|x| Add(x));
@@ -56,7 +55,7 @@ fn pownz(b:&mut test::Bencher) {
 
 #[bench]
 fn product_naive(b:&mut test::Bencher) {
-    let r = rand::task_rng();
+    let r = util::seeded_rng();
     let g = &mut quickcheck::gen(r, ITERATIONS);
     let xs: Vec<Option<f64>> = Arbitrary::arbitrary(g);
     let mut it = xs.iter().map(|&x| x.map(|x| Add(x)));
@@ -68,7 +67,7 @@ fn product_naive(b:&mut test::Bencher) {
 
 #[bench]
 fn product(b:&mut test::Bencher) {
-    let r = rand::task_rng();
+    let r = util::seeded_rng();
     let g = &mut quickcheck::gen(r, ITERATIONS);
     let xs: Vec<Option<f64>> = Arbitrary::arbitrary(g);
     let mut it = xs.iter().map(|&x| x.map(|x| Add(x)));

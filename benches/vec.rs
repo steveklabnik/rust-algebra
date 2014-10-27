@@ -15,7 +15,6 @@ use quickcheck::{
 };
 use std::f64;
 use std::iter;
-use std::rand;
 
 // local imports
 use semigroup::{
@@ -37,7 +36,7 @@ fn ELEM() -> Vec<f64> {
 
 #[bench]
 fn pownz_naive(b:&mut test::Bencher) {
-    let r = rand::task_rng();
+    let r = util::seeded_rng();
     let g = &mut quickcheck::gen(r, quickcheck::DEFAULT_SIZE);
     let sx: Vec<f64> = Arbitrary::arbitrary(g);
     let task = || {
@@ -48,7 +47,7 @@ fn pownz_naive(b:&mut test::Bencher) {
 
 #[bench]
 fn pownz(b:&mut test::Bencher) {
-    let r = rand::task_rng();
+    let r = util::seeded_rng();
     let g = &mut quickcheck::gen(r, quickcheck::DEFAULT_SIZE);
     let sx: Vec<f64> = Arbitrary::arbitrary(g);
     let task = || {
@@ -59,7 +58,7 @@ fn pownz(b:&mut test::Bencher) {
 
 #[bench]
 fn product_naive(b:&mut test::Bencher) {
-    let r = rand::task_rng();
+    let r = util::seeded_rng();
     let g = &mut quickcheck::gen(r, ITERATIONS);
     let xs: Vec<Vec<f64>> = Arbitrary::arbitrary(g);
     let mut it = xs.into_iter();
@@ -71,7 +70,7 @@ fn product_naive(b:&mut test::Bencher) {
 
 #[bench]
 fn product(b:&mut test::Bencher) {
-    let r = rand::task_rng();
+    let r = util::seeded_rng();
     let g = &mut quickcheck::gen(r, ITERATIONS);
     let xs: Vec<Vec<f64>> = Arbitrary::arbitrary(g);
     let mut it = xs.into_iter();
