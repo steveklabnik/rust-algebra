@@ -47,6 +47,10 @@ pub use self::or::{
     Or,
 };
 
+pub use self::snd::{
+    Snd,
+};
+
 pub use self::swap::{
     Swap,
 };
@@ -63,6 +67,7 @@ pub mod option;
 pub mod or;
 pub mod product;
 pub mod ringbuf;
+pub mod snd;
 pub mod sum;
 pub mod swap;
 pub mod unit;
