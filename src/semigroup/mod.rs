@@ -27,6 +27,10 @@ pub use self::mul::{
     Mul,
 };
 
+pub use self::swap::{
+    Swap,
+};
+
 pub mod core;
 pub mod add;
 pub mod dlist;
@@ -35,5 +39,6 @@ pub mod option;
 pub mod product;
 pub mod ringbuf;
 pub mod sum;
+pub mod swap;
 pub mod unit;
 pub mod vec;
