@@ -31,6 +31,10 @@ pub use self::mul::{
     Mul,
 };
 
+pub use self::or::{
+    Or,
+};
+
 pub use self::swap::{
     Swap,
 };
@@ -41,6 +45,7 @@ pub mod and;
 pub mod dlist;
 pub mod mul;
 pub mod option;
+pub mod or;
 pub mod product;
 pub mod ringbuf;
 pub mod sum;
