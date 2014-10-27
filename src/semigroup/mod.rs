@@ -68,6 +68,7 @@ pub mod or;
 pub mod product;
 pub mod ringbuf;
 pub mod snd;
+pub mod string;
 pub mod sum;
 pub mod swap;
 pub mod unit;
