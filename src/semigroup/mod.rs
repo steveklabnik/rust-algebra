@@ -27,6 +27,10 @@ pub use self::and::{
     And,
 };
 
+pub use self::fst::{
+    Fst,
+};
+
 pub use self::max::{
     Max,
 };
@@ -51,6 +55,7 @@ pub mod core;
 pub mod add;
 pub mod and;
 pub mod dlist;
+pub mod fst;
 pub mod max;
 pub mod min;
 pub mod mul;
