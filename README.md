@@ -6,6 +6,8 @@ Semigroups in Rust
 
 This library implements `Semigroup` and related traits. Semigroups are mathematical structures with an associative operation (e.g., `(+)`, `(*)`, `(&&)`, `(||)`, …).
 
+The design of this library is roughly fashioned after Kmett's [semigroups](https://github.com/ekmett/semigroups/) for Haskell.
+
 ## Requirements
 
 1.   [Rust](http://www.rust-lang.org/)
