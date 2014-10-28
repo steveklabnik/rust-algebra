@@ -65,6 +65,7 @@ pub mod min;
 pub mod mul;
 pub mod option;
 pub mod or;
+pub mod ordering;
 pub mod product;
 pub mod ringbuf;
 pub mod snd;
