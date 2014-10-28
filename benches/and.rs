@@ -7,7 +7,7 @@ extern crate quickcheck_macros;
 extern crate test;
 
 // local crates
-extern crate semigroup;
+extern crate algebra;
 
 // external exports
 use quickcheck::{
@@ -15,11 +15,16 @@ use quickcheck::{
 };
 
 // local imports
-use semigroup::{
-    And,
+use algebra::monoid::{
+    Monoid,
+};
+use algebra::semigroup::{
     Semigroup,
     SemigroupIterator,
     SemigroupReplicate,
+};
+use algebra::structure::{
+    And,
 };
 
 // custom mods
@@ -83,6 +88,14 @@ fn cat_one(bencher:&mut test::Bencher) {
     let mut it = xs.iter().map(|&x| And(x));
     let task = || {
         it.cat_one(ELEM)
+    };
+    bencher.iter(task);
+}
+
+#[bench]
+fn nil(bencher:&mut test::Bencher) {
+    let task = || {
+        let _: And = Monoid::nil();
     };
     bencher.iter(task);
 }

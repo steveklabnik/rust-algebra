@@ -7,7 +7,7 @@ extern crate quickcheck;
 extern crate quickcheck_macros;
 
 // local crates
-extern crate semigroup;
+extern crate algebra;
 
 // external exports
 use quickcheck::{
@@ -18,8 +18,15 @@ use std::iter;
 use std::rand;
 
 // local imports
-use semigroup::{
-    S,
+use algebra::magma::{
+    M,
+};
+use algebra::monoid::{
+    Monoid,
+    MonoidIterator,
+    MonoidReplicate,
+};
+use algebra::semigroup::{
     SemigroupIterator,
     SemigroupReplicate,
 };
@@ -35,35 +42,77 @@ mod util;
 const ITERATIONS: uint = 10000u;
 
 #[quickcheck]
-fn app_associative(a:Proxy, b:Proxy, c:Proxy) -> bool {
+fn mag_app_asc(a:Proxy, b:Proxy, c:Proxy) -> bool {
     let a = reify(a);
     let b = reify(b);
     let c = reify(c);
-    S(a) * (S(b) * S(c)) == (S(a) * S(b)) * S(c)
+    M(a) * (M(b) * M(c)) == (M(a) * M(b)) * M(c)
 }
 
 #[quickcheck]
-fn app_sound(a:Proxy, b:Proxy) -> bool {
+fn mag_app_snd(a:Proxy, b:Proxy) -> bool {
     let a = reify(a);
     let b = reify(b);
-    S(a) * S(b) == match a {
-        Less    => { S(Less)    },
-        Equal   => { S(b)       },
-        Greater => { S(Greater) },
+    M(a) * M(b) == match a {
+        Less    => { M(Less)    },
+        Equal   => { M(b)       },
+        Greater => { M(Greater) },
     }
 }
 
 #[quickcheck]
-fn rep_one_equiv_naive(a:Proxy) -> bool {
+fn mon_nil_app_idn(b:Proxy) -> bool {
+    let b = reify(b);
+    M(Monoid::nil()) * M(b) == M(b)
+}
+
+#[quickcheck]
+fn mon_app_nil_idn(a:Proxy) -> bool {
+    let a = reify(a);
+    M(a) * M(Monoid::nil()) == M(a)
+}
+
+#[quickcheck]
+fn mon_cat_eqv_nai(a:Proxy, n:uint) -> bool {
+    let a = reify(a);
+    let mut it = iter::Repeat::new(a).take(n);
+    it.clone().cat() == util::cat_naive(&mut it)
+}
+
+#[quickcheck]
+fn mon_rep_eqv_nai(a:Proxy) -> bool {
+    let a = reify(a);
+    let g = &mut gen(rand::task_rng(), ITERATIONS);
+    let n = Arbitrary::arbitrary(g);
+    a.rep(n) == util::rep_naive(a, n)
+}
+
+#[quickcheck]
+fn mon_sem_cat_cmp(a:Proxy, n:uint) -> bool {
+    let a = reify(a);
+    let it = iter::Repeat::new(a).take(n + 1u);
+    it.clone().cat() == it.skip(1u).cat_one(a)
+}
+
+#[quickcheck]
+fn mon_sem_rep_cmp(a:Proxy) -> bool {
+    let a = reify(a);
+    let g = &mut gen(rand::task_rng(), ITERATIONS);
+    let n: uint = Arbitrary::arbitrary(g);
+    a.rep(n + 1u) == util::rep_one_naive(a, n)
+}
+
+#[quickcheck]
+fn sem_cat_one_eqv_nai(a:Proxy, n:uint) -> bool {
+    let a = reify(a);
+    let mut it = iter::Repeat::new(a).take(n);
+    it.clone().cat_one(a) == util::cat_one_naive(&mut it, a)
+}
+
+#[quickcheck]
+fn sem_rep_one_eqv_nai(a:Proxy) -> bool {
     let a = reify(a);
     let g = &mut gen(rand::task_rng(), ITERATIONS);
     let n = Arbitrary::arbitrary(g);
     a.rep_one(n) == util::rep_one_naive(a, n)
-}
-
-#[quickcheck]
-fn cat_one_equiv_naive(a:Proxy, n:uint) -> bool {
-    let a = reify(a);
-    let mut it = iter::Repeat::new(a).take(n);
-    it.clone().cat_one(a) == util::cat_one_naive(&mut it, a)
 }

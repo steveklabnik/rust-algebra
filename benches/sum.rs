@@ -7,7 +7,7 @@ extern crate quickcheck_macros;
 extern crate test;
 
 // local crates
-extern crate semigroup;
+extern crate algebra;
 
 // external exports
 use quickcheck::{
@@ -16,12 +16,14 @@ use quickcheck::{
 use std::f64;
 
 // local imports
-use semigroup::{
-    Add,
-    Mul,
+use algebra::semigroup::{
     Semigroup,
     SemigroupIterator,
     SemigroupReplicate,
+};
+use algebra::structure::{
+    Add,
+    Mul,
 };
 
 // custom mods

@@ -1,12 +1,12 @@
 [package]
 
-name    = "semigroup"
+name    = "algebra"
 version = "0.0.0"
 authors = [ "Darin Morrison <darinmorrison+rust@gmail.com>" ]
 
 [lib]
-name = "semigroup"
-path = "src/semigroup/mod.rs"
+name = "algebra"
+path = "src/lib.rs"
 
 # [dev-dependencies.criterion]
 # git = "https://github.com/japaric/criterion.rs"

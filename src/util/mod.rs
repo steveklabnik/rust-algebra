@@ -1,7 +1,7 @@
 #![cfg(test)]
 
 // local crates
-extern crate semigroup;
+extern crate algebra;
 
 // external imports
 use std::num;
@@ -11,7 +11,10 @@ use std::rand::{
 };
 
 // local imports
-use semigroup::{
+use algebra::monoid::{
+    Monoid,
+};
+use algebra::semigroup::{
     Semigroup,
 };
 
@@ -27,11 +30,36 @@ pub fn seeded_rng() -> StdRng {
 
 #[allow(dead_code)]
 #[inline]
+pub fn rep_builtin<A>(base:A, exp:uint) -> A
+    where
+        A:num::One,
+{
+    num::pow(base, exp)
+}
+
+#[allow(dead_code)]
+#[inline]
 pub fn rep_one_builtin<A>(base:A, exp:uint) -> A
     where
         A:num::One,
 {
     num::pow(base, exp + 1)
+}
+
+#[allow(dead_code)]
+#[inline]
+pub fn rep_naive<A>(base:A, mut exp:uint) -> A
+    where
+        A:Clone,
+        A:Monoid,
+{
+    let mut acc: A = Monoid::nil();
+    exp = exp + 1;
+    while exp > 1 {
+        acc = acc.app(&base);
+        exp = exp - 1
+    }
+    acc
 }
 
 #[inline]
@@ -46,6 +74,18 @@ pub fn rep_one_naive<A>(base:A, mut exp:uint) -> A
         acc = acc.app(&base);
         exp = exp - 1
     }
+    acc
+}
+
+#[allow(dead_code)]
+#[inline]
+pub fn cat_naive<A,F>(it:&mut F) -> A
+    where
+        A:Monoid,
+        F:Iterator<A>,
+{
+    let mut acc: A = Monoid::nil();
+    for x in it { acc = acc.app(&x) }
     acc
 }
 

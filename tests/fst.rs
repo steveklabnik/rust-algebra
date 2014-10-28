@@ -7,7 +7,7 @@ extern crate quickcheck;
 extern crate quickcheck_macros;
 
 // local crates
-extern crate semigroup;
+extern crate algebra;
 
 // external exports
 use quickcheck::{
@@ -18,11 +18,15 @@ use std::iter;
 use std::rand;
 
 // local imports
-use semigroup::{
-    Fst,
-    S,
+use algebra::magma::{
+    M,
+};
+use algebra::semigroup::{
     SemigroupIterator,
     SemigroupReplicate,
+};
+use algebra::structure::{
+    Fst,
 };
 
 // custom mods
@@ -32,24 +36,29 @@ mod util;
 const ITERATIONS: uint = 10000u;
 
 #[quickcheck]
-fn app_associative(a:uint, b:uint, c:uint) -> bool {
-    S(Fst(a)) * (S(Fst(b)) * S(Fst(c))) == (S(Fst(a)) * S(Fst(b))) * S(Fst(c))
+fn mag_app_asc(a:uint, b:uint, c:uint) -> bool {
+    let a = Fst(a);
+    let b = Fst(b);
+    let c = Fst(c);
+    M(a) * (M(b) * M(c)) == (M(a) * M(b)) * M(c)
 }
 
 #[quickcheck]
-fn app_sound(a:uint, b:uint) -> bool {
-    S(Fst(a)) * S(Fst(b)) == S(Fst(a))
+fn mag_app_snd(a:uint, b:uint) -> bool {
+    M(Fst(a)) * M(Fst(b)) == M(Fst(a))
 }
 
 #[quickcheck]
-fn rep_one_equiv_naive(a:uint) -> bool {
+fn sem_cat_one_eqv_nai(a:uint, n:uint) -> bool {
+    let a = Fst(a);
+    let mut it = iter::Repeat::new(a).take(n);
+    it.clone().cat_one(a) == util::cat_one_naive(&mut it, a)
+}
+
+#[quickcheck]
+fn sem_rep_one_eqv_nai(a:uint) -> bool {
+    let a = Fst(a);
     let g = &mut gen(rand::task_rng(), ITERATIONS);
     let n = Arbitrary::arbitrary(g);
-    Fst(a).rep_one(n) == util::rep_one_naive(Fst(a), n)
-}
-
-#[quickcheck]
-fn cat_one_equiv_naive(a:uint, n:uint) -> bool {
-    let mut it = iter::Repeat::new(Fst(a)).take(n);
-    it.clone().cat_one(Fst(a)) == util::cat_one_naive(&mut it, Fst(a))
+    a.rep_one(n) == util::rep_one_naive(a, n)
 }

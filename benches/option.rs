@@ -7,7 +7,7 @@ extern crate quickcheck_macros;
 extern crate test;
 
 // local crates
-extern crate semigroup;
+extern crate algebra;
 
 // external exports
 use quickcheck::{
@@ -16,11 +16,18 @@ use quickcheck::{
 use std::f64;
 
 // local imports
-use semigroup::{
-    Add,
+use algebra::monoid::{
+    Monoid,
+    MonoidIterator,
+    MonoidReplicate,
+};
+use algebra::semigroup::{
     Semigroup,
     SemigroupIterator,
     SemigroupReplicate,
+};
+use algebra::structure::{
+    Add,
 };
 
 // custom mods
@@ -45,6 +52,18 @@ fn app(bencher:&mut test::Bencher) {
 }
 
 #[bench]
+fn rep_naive(bencher:&mut test::Bencher) {
+    let rng = util::seeded_rng();
+    let gen = &mut quickcheck::gen(rng, quickcheck::DEFAULT_SIZE);
+    let a: Option    <f64>  = Arbitrary::arbitrary(gen);
+    let a: Option<Add<f64>> = a.map(|x| Add(x));
+    let task = || {
+        util::rep_naive(a, ITERATIONS)
+    };
+    bencher.iter(task);
+}
+
+#[bench]
 fn rep_one_naive(bencher:&mut test::Bencher) {
     let rng = util::seeded_rng();
     let gen = &mut quickcheck::gen(rng, quickcheck::DEFAULT_SIZE);
@@ -52,6 +71,18 @@ fn rep_one_naive(bencher:&mut test::Bencher) {
     let a: Option<Add<f64>> = a.map(|x| Add(x));
     let task = || {
         util::rep_one_naive(a, ITERATIONS)
+    };
+    bencher.iter(task);
+}
+
+#[bench]
+fn rep(bencher:&mut test::Bencher) {
+    let rng = util::seeded_rng();
+    let gen = &mut quickcheck::gen(rng, quickcheck::DEFAULT_SIZE);
+    let a: Option    <f64>  = Arbitrary::arbitrary(gen);
+    let a: Option<Add<f64>> = a.map(|x| Add(x));
+    let task = || {
+        a.rep(ITERATIONS)
     };
     bencher.iter(task);
 }
@@ -69,6 +100,18 @@ fn rep_one(bencher:&mut test::Bencher) {
 }
 
 #[bench]
+fn cat_naive(bencher:&mut test::Bencher) {
+    let rng = util::seeded_rng();
+    let gen = &mut quickcheck::gen(rng, ITERATIONS);
+    let xs: Vec<Option<f64>> = Arbitrary::arbitrary(gen);
+    let mut it = xs.iter().map(|&x| x.map(|x| Add(x)));
+    let task = || {
+        util::cat_naive(&mut it)
+    };
+    bencher.iter(task);
+}
+
+#[bench]
 fn cat_one_naive(bencher:&mut test::Bencher) {
     let rng = util::seeded_rng();
     let gen = &mut quickcheck::gen(rng, ITERATIONS);
@@ -81,6 +124,18 @@ fn cat_one_naive(bencher:&mut test::Bencher) {
 }
 
 #[bench]
+fn cat(bencher:&mut test::Bencher) {
+    let rng = util::seeded_rng();
+    let gen = &mut quickcheck::gen(rng, ITERATIONS);
+    let xs: Vec<Option<f64>> = Arbitrary::arbitrary(gen);
+    let mut it = xs.iter().map(|&x| x.map(|x| Add(x)));
+    let task = || {
+        it.cat()
+    };
+    bencher.iter(task);
+}
+
+#[bench]
 fn cat_one(bencher:&mut test::Bencher) {
     let rng = util::seeded_rng();
     let gen = &mut quickcheck::gen(rng, ITERATIONS);
@@ -88,6 +143,14 @@ fn cat_one(bencher:&mut test::Bencher) {
     let mut it = xs.iter().map(|&x| x.map(|x| Add(x)));
     let task = || {
         it.cat_one(ELEM)
+    };
+    bencher.iter(task);
+}
+
+#[bench]
+fn nil(bencher:&mut test::Bencher) {
+    let task = || {
+        let _: Option<Add<f64>> = Monoid::nil();
     };
     bencher.iter(task);
 }

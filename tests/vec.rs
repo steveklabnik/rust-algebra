@@ -6,7 +6,7 @@ extern crate quickcheck;
 extern crate quickcheck_macros;
 
 // local crates
-extern crate semigroup;
+extern crate algebra;
 
 // external exports
 use quickcheck::{
@@ -17,8 +17,15 @@ use std::iter;
 use std::rand;
 
 // local imports
-use semigroup::{
-    S,
+use algebra::magma::{
+    M,
+};
+use algebra::monoid::{
+    Monoid,
+    MonoidIterator,
+    MonoidReplicate,
+};
+use algebra::semigroup::{
     SemigroupIterator,
     SemigroupReplicate,
 };
@@ -30,26 +37,62 @@ mod util;
 const ITERATIONS: uint = 100u;
 
 #[quickcheck]
-fn app_associative(a:Vec<uint>, b:Vec<uint>, c:Vec<uint>) -> bool {
-    S(a.clone()) * (S(b.clone()) * S(c.clone())) == (S(a) * S(b)) * S(c)
+fn mag_app_asc(a:Vec<uint>, b:Vec<uint>, c:Vec<uint>) -> bool {
+    M(a.clone()) * (M(b.clone()) * M(c.clone())) == (M(a) * M(b)) * M(c)
 }
 
 #[quickcheck]
-fn app_sound(a:Vec<uint>, b:Vec<uint>) -> bool {
+fn mag_app_snd(a:Vec<uint>, b:Vec<uint>) -> bool {
     let mut c = a.clone();
     c.extend(b.iter().map(|&x| x));
-    S(a) * S(b) == S(c)
+    M(a) * M(b) == M(c)
 }
 
 #[quickcheck]
-fn rep_one_equiv_naive(a:Vec<uint>) -> bool {
+fn mon_nil_app_idn(b:Vec<uint>) -> bool {
+    M(Monoid::nil()) * M(b.clone()) == M(b)
+}
+
+#[quickcheck]
+fn mon_app_nil_idn(a:Vec<uint>) -> bool {
+    M(a.clone()) * M(Monoid::nil()) == M(a)
+}
+
+#[quickcheck]
+fn mon_cat_eqv_nai(a:Vec<uint>, n:uint) -> bool {
+    let mut it = iter::Repeat::new(a.clone()).take(n);
+    it.clone().cat() == util::cat_naive(&mut it)
+}
+
+#[quickcheck]
+fn mon_rep_eqv_nai(a:Vec<uint>) -> bool {
+    let g = &mut gen(rand::task_rng(), ITERATIONS);
+    let n = Arbitrary::arbitrary(g);
+    a.clone().rep(n) == util::rep_naive(a, n)
+}
+
+#[quickcheck]
+fn mon_sem_cat_cmp(a:Vec<uint>, n:uint) -> bool {
+    let it = iter::Repeat::new(a.clone()).take(n + 1u);
+    it.clone().cat() == it.skip(1u).cat_one(a)
+}
+
+#[quickcheck]
+fn mon_sem_rep_cmp(a:Vec<uint>) -> bool {
+    let g = &mut gen(rand::task_rng(), ITERATIONS);
+    let n: uint = Arbitrary::arbitrary(g);
+    a.clone().rep(n + 1u) == util::rep_one_naive(a, n)
+}
+
+#[quickcheck]
+fn sem_cat_one_eqv_nai(a:Vec<uint>, n:uint) -> bool {
+    let mut it = iter::Repeat::new(a.clone()).take(n);
+    it.clone().cat_one(a.clone()) == util::cat_one_naive(&mut it, a)
+}
+
+#[quickcheck]
+fn sem_rep_one_eqv_nai(a:Vec<uint>) -> bool {
     let g = &mut gen(rand::task_rng(), ITERATIONS);
     let n = Arbitrary::arbitrary(g);
     a.clone().rep_one(n) == util::rep_one_naive(a, n)
-}
-
-#[quickcheck]
-fn cat_one_equiv_naive(a:Vec<uint>, n:uint) -> bool {
-    let mut it = iter::Repeat::new(a.clone()).take(n);
-    it.clone().cat_one(a.clone()) == util::cat_one_naive(&mut it, a)
 }

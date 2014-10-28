@@ -7,7 +7,7 @@ extern crate quickcheck;
 extern crate quickcheck_macros;
 
 // local crates
-extern crate semigroup;
+extern crate algebra;
 
 // external exports
 use quickcheck::{
@@ -18,11 +18,20 @@ use std::iter;
 use std::rand;
 
 // local imports
-use semigroup::{
-    Or,
-    S,
+use algebra::magma::{
+    M,
+};
+use algebra::monoid::{
+    Monoid,
+    MonoidIterator,
+    MonoidReplicate,
+};
+use algebra::semigroup::{
     SemigroupIterator,
     SemigroupReplicate,
+};
+use algebra::structure::{
+    Or,
 };
 
 // custom mods
@@ -32,24 +41,71 @@ mod util;
 const ITERATIONS: uint = 10000u;
 
 #[quickcheck]
-fn app_associative(a:bool, b:bool, c:bool) -> bool {
-    S(Or(a)) * (S(Or(b)) * S(Or(c))) == (S(Or(a)) * S(Or(b))) * S(Or(c))
+fn mag_app_asc(a:bool, b:bool, c:bool) -> bool {
+    let a = Or(a);
+    let b = Or(b);
+    let c = Or(c);
+    M(a) * (M(b) * M(c)) == (M(a) * M(b)) * M(c)
 }
 
 #[quickcheck]
-fn app_sound(a:bool, b:bool) -> bool {
-    S(Or(a)) * S(Or(b)) == S(Or(a || b))
+fn mag_app_snd(a:bool, b:bool) -> bool {
+    M(Or(a)) * M(Or(b)) == M(Or(a || b))
 }
 
 #[quickcheck]
-fn rep_one_equiv_naive(a:bool) -> bool {
+fn mon_nil_app_idn(b:bool) -> bool {
+    let b = Or(b);
+    M(Monoid::nil()) * M(b) == M(b)
+}
+
+#[quickcheck]
+fn mon_app_nil_idn(a:bool) -> bool {
+    let a = Or(a);
+    M(a) * M(Monoid::nil()) == M(a)
+}
+
+#[quickcheck]
+fn mon_cat_eqv_nai(a:bool, n:uint) -> bool {
+    let a = Or(a);
+    let mut it = iter::Repeat::new(a).take(n);
+    it.clone().cat() == util::cat_naive(&mut it)
+}
+
+#[quickcheck]
+fn mon_rep_eqv_nai(a:bool) -> bool {
+    let a = Or(a);
     let g = &mut gen(rand::task_rng(), ITERATIONS);
     let n = Arbitrary::arbitrary(g);
-    Or(a).rep_one(n) == util::rep_one_naive(Or(a), n)
+    a.rep(n) == util::rep_naive(a, n)
 }
 
 #[quickcheck]
-fn cat_one_equiv_naive(a:bool, n:uint) -> bool {
-    let mut it = iter::Repeat::new(Or(a)).take(n);
-    it.clone().cat_one(Or(a)) == util::cat_one_naive(&mut it, Or(a))
+fn mon_sem_cat_cmp(a:bool, n:uint) -> bool {
+    let a = Or(a);
+    let it = iter::Repeat::new(a).take(n + 1u);
+    it.clone().cat() == it.skip(1u).cat_one(a)
+}
+
+#[quickcheck]
+fn mon_sem_rep_cmp(a:bool) -> bool {
+    let a = Or(a);
+    let g = &mut gen(rand::task_rng(), ITERATIONS);
+    let n: uint = Arbitrary::arbitrary(g);
+    a.rep(n + 1u) == util::rep_one_naive(a, n)
+}
+
+#[quickcheck]
+fn sem_cat_one_eqv_nai(a:bool, n:uint) -> bool {
+    let a = Or(a);
+    let mut it = iter::Repeat::new(a).take(n);
+    it.clone().cat_one(a) == util::cat_one_naive(&mut it, a)
+}
+
+#[quickcheck]
+fn sem_rep_one_eqv_nai(a:bool) -> bool {
+    let a = Or(a);
+    let g = &mut gen(rand::task_rng(), ITERATIONS);
+    let n = Arbitrary::arbitrary(g);
+    a.rep_one(n) == util::rep_one_naive(a, n)
 }
