@@ -20,7 +20,7 @@ use std::rand;
 use semigroup::{
     S,
     SemigroupIterator,
-    SemigroupPowNonZero,
+    SemigroupReplicate,
 };
 
 // custom mods
@@ -30,26 +30,26 @@ mod util;
 const ITERATIONS: uint = 100u;
 
 #[quickcheck]
-fn op_associative(a:Vec<uint>, b:Vec<uint>, c:Vec<uint>) -> bool {
+fn app_associative(a:Vec<uint>, b:Vec<uint>, c:Vec<uint>) -> bool {
     S(a.clone()) * (S(b.clone()) * S(c.clone())) == (S(a) * S(b)) * S(c)
 }
 
 #[quickcheck]
-fn op_sound(a:Vec<uint>, b:Vec<uint>) -> bool {
+fn app_sound(a:Vec<uint>, b:Vec<uint>) -> bool {
     let mut c = a.clone();
     c.extend(b.iter().map(|&x| x));
     S(a) * S(b) == S(c)
 }
 
 #[quickcheck]
-fn pownz_equiv_naive(a:Vec<uint>) -> bool {
+fn rep_one_equiv_naive(a:Vec<uint>) -> bool {
     let g = &mut gen(rand::task_rng(), ITERATIONS);
     let n = Arbitrary::arbitrary(g);
-    a.clone().pownz(n) == util::pownz_naive(a, n)
+    a.clone().rep_one(n) == util::rep_one_naive(a, n)
 }
 
 #[quickcheck]
-fn product_equiv_naive(a:Vec<uint>, n:uint) -> bool {
+fn cat_one_equiv_naive(a:Vec<uint>, n:uint) -> bool {
     let mut it = iter::Repeat::new(a.clone()).take(n);
-    it.clone().product(a.clone()) == util::product_naive(&mut it, a)
+    it.clone().cat_one(a.clone()) == util::cat_one_naive(&mut it, a)
 }

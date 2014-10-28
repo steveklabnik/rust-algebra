@@ -14,7 +14,7 @@ impl<A> Semigroup for Fst<A>
         A:Clone,
 {
     #[inline]
-    fn op(&self, _:&Fst<A>) -> Fst<A> {
+    fn app(&self, _:&Fst<A>) -> Fst<A> {
         (*self).clone()
     }
 }

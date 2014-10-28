@@ -14,7 +14,7 @@ impl<A> Semigroup for Add<A>
         A:Num,
 {
     #[inline]
-    fn op(&self, rhs:&Add<A>) -> Add<A> {
+    fn app(&self, rhs:&Add<A>) -> Add<A> {
         let &Add(ref lhs) = self;
         let &Add(ref rhs) = rhs;
         Add(lhs.add(rhs))

@@ -6,7 +6,7 @@ use core::{
 impl Semigroup for ()
 {
     #[inline]
-    fn op(&self, _:&()) -> () {
+    fn app(&self, _:&()) -> () {
         ()
     }
 }

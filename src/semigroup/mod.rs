@@ -15,7 +15,7 @@ extern crate quickcheck_macros;
 pub use self::core::{
     S,
     Semigroup,
-    SemigroupPowNonZero,
+    SemigroupReplicate,
     SemigroupIterator,
 };
 

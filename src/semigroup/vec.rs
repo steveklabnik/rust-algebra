@@ -8,7 +8,7 @@ impl<A> Semigroup for Vec<A>
         A:Clone,
 {
     #[inline]
-    fn op(&self, rhs:&Vec<A>) -> Vec<A> {
+    fn app(&self, rhs:&Vec<A>) -> Vec<A> {
         let mut res = self.clone();
         res.push_all(rhs.as_slice());
         res

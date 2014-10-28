@@ -23,7 +23,7 @@ use semigroup::{
     Min,
     S,
     SemigroupIterator,
-    SemigroupPowNonZero,
+    SemigroupReplicate,
 };
 
 // custom mods
@@ -33,24 +33,24 @@ mod util;
 const ITERATIONS: uint = 10000u;
 
 #[quickcheck]
-fn op_associative(a:uint, b:uint, c:uint) -> bool {
+fn app_associative(a:uint, b:uint, c:uint) -> bool {
     S(Min(a)) * (S(Min(b)) * S(Min(c))) == (S(Min(a)) * S(Min(b))) * S(Min(c))
 }
 
 #[quickcheck]
-fn op_sound(a:uint, b:uint) -> bool {
+fn app_sound(a:uint, b:uint) -> bool {
     S(Min(a)) * S(Min(b)) == S(Min(cmp::min(a,b)))
 }
 
 #[quickcheck]
-fn pownz_equiv_naive(a:uint) -> bool {
+fn rep_one_equiv_naive(a:uint) -> bool {
     let g = &mut gen(rand::task_rng(), ITERATIONS);
     let n = Arbitrary::arbitrary(g);
-    Min(a).pownz(n) == util::pownz_naive(Min(a), n)
+    Min(a).rep_one(n) == util::rep_one_naive(Min(a), n)
 }
 
 #[quickcheck]
-fn product_equiv_naive(a:uint, n:uint) -> bool {
+fn cat_one_equiv_naive(a:uint, n:uint) -> bool {
     let mut it = iter::Repeat::new(Min(a)).take(n);
-    it.clone().product(Min(a)) == util::product_naive(&mut it, Min(a))
+    it.clone().cat_one(Min(a)) == util::cat_one_naive(&mut it, Min(a))
 }

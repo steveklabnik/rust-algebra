@@ -25,7 +25,7 @@ pub fn seeded_rng() -> StdRng {
 
 #[allow(dead_code)]
 #[inline]
-pub fn pownz_builtin<A>(base:A, exp:uint) -> A
+pub fn rep_one_builtin<A>(base:A, exp:uint) -> A
     where
         A:num::One,
 {
@@ -33,7 +33,7 @@ pub fn pownz_builtin<A>(base:A, exp:uint) -> A
 }
 
 #[inline]
-pub fn pownz_naive<A>(base:A, mut exp:uint) -> A
+pub fn rep_one_naive<A>(base:A, mut exp:uint) -> A
     where
         A:Clone,
         A:Semigroup,
@@ -41,18 +41,18 @@ pub fn pownz_naive<A>(base:A, mut exp:uint) -> A
     let mut acc = base.clone();
     exp = exp + 1;
     while exp > 1 {
-        acc = acc.op(&base);
+        acc = acc.app(&base);
         exp = exp - 1
     }
     acc
 }
 
 #[inline]
-pub fn product_naive<A,F>(it:&mut F, mut acc:A) -> A
+pub fn cat_one_naive<A,F>(it:&mut F, mut acc:A) -> A
     where
         A:Semigroup,
         F:Iterator<A>,
 {
-    for x in it { acc = acc.op(&x) }
+    for x in it { acc = acc.app(&x) }
     acc
 }

@@ -1,19 +1,19 @@
 // FIXME: revisit when associated-types are working
 pub trait Semigroup
 {
-    fn op(&self, rhs:&Self) -> Self;
+    fn app(&self, rhs:&Self) -> Self;
 }
 
 pub trait SemigroupIterator<A>
     where
         A:Semigroup,
 {
-    fn product(&mut self, base:A) -> A;
+    fn cat_one(&mut self, base:A) -> A;
 }
 
-pub trait SemigroupPowNonZero: Semigroup
+pub trait SemigroupReplicate: Semigroup
 {
-    fn pownz(self, exp:uint) -> Self;
+    fn rep_one(self, exp:uint) -> Self;
 }
 
 impl<A,F> SemigroupIterator<A> for F
@@ -22,26 +22,26 @@ impl<A,F> SemigroupIterator<A> for F
         F:Iterator<A>,
 {
     #[inline]
-    fn product(&mut self, base:A) -> A {
-        self.fold(base, |acc, x| acc.op(&x))
+    fn cat_one(&mut self, base:A) -> A {
+        self.fold(base, |acc, x| acc.app(&x))
     }
 }
 
-impl<A> SemigroupPowNonZero for A
+impl<A> SemigroupReplicate for A
     where
         A:Clone,
         A:Semigroup,
 {
     #[inline]
-    fn pownz(mut self, mut exp:uint) -> A {
+    fn rep_one(mut self, mut exp:uint) -> A {
         if exp == 0 { self }
         else {
             let mut acc = self.clone();
             while exp > 0 {
                 if (exp & 1) == 1 {
-                    acc = acc.op(&self);
+                    acc = acc.app(&self);
                 }
-                self = self.op(&self);
+                self = self.app(&self);
                 exp = exp >> 1;
             }
             acc
@@ -60,10 +60,10 @@ impl<A> Semigroup for S<A>
         A:Semigroup,
 {
     #[inline]
-    fn op(&self, rhs:&S<A>) -> S<A> {
+    fn app(&self, rhs:&S<A>) -> S<A> {
         let &S(ref lhs) = self;
         let &S(ref rhs) = rhs;
-        S(lhs.op(rhs))
+        S(lhs.app(rhs))
     }
 }
 
@@ -73,6 +73,6 @@ impl<A> Mul<S<A>,S<A>> for S<A>
 {
     #[inline]
     fn mul(&self, rhs:&S<A>) -> S<A> {
-        self.op(rhs)
+        self.app(rhs)
     }
 }

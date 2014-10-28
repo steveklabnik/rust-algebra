@@ -14,9 +14,9 @@ impl<A> Semigroup for Swap<A>
         A:Semigroup,
 {
     #[inline]
-    fn op(&self, rhs:&Swap<A>) -> Swap<A> {
+    fn app(&self, rhs:&Swap<A>) -> Swap<A> {
         let &Swap(ref rhs) = rhs;
         let &Swap(ref lhs) = self;
-        Swap(rhs.op(lhs))
+        Swap(rhs.app(lhs))
     }
 }

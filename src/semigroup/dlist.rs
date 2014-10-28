@@ -13,7 +13,7 @@ impl<A> Semigroup for DList<A>
         A:Clone,
 {
     #[inline]
-    fn op(&self, rhs:&DList<A>) -> DList<A> {
+    fn app(&self, rhs:&DList<A>) -> DList<A> {
         let mut res = self.clone();
         res.append(rhs.clone());
         res

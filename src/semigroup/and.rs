@@ -14,7 +14,7 @@ pub struct And(pub bool);
 impl Semigroup for And
 {
     #[inline]
-    fn op(&self, rhs:&And) -> And {
+    fn app(&self, rhs:&And) -> And {
         let And(lhs) = *self;
         let And(rhs) = *rhs;
         And(lhs && rhs)

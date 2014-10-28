@@ -14,7 +14,7 @@ impl<A> Semigroup for RingBuf<A>
         A:Clone,
 {
     #[inline]
-    fn op(&self, rhs:&RingBuf<A>) -> RingBuf<A> {
+    fn app(&self, rhs:&RingBuf<A>) -> RingBuf<A> {
         if self.len() > rhs.len() {
             let mut acc = self.clone();
             for x in rhs.iter() {

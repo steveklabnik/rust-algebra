@@ -21,7 +21,7 @@ use semigroup::{
     Mul,
     Semigroup,
     SemigroupIterator,
-    SemigroupPowNonZero,
+    SemigroupReplicate,
 };
 
 // custom mods
@@ -32,7 +32,7 @@ const ELEM: (Add<f64>,Mul<f64>) = (Add(f64::consts::PI),Mul(f64::consts::PI));
 const ITERATIONS: uint = 10000u;
 
 #[bench]
-fn op(bencher:&mut test::Bencher) {
+fn app(bencher:&mut test::Bencher) {
     let rng = util::seeded_rng();
     let gen = &mut quickcheck::gen(rng, quickcheck::DEFAULT_SIZE);
     let a:  (Add<f64>,Mul<f64>) =
@@ -42,26 +42,26 @@ fn op(bencher:&mut test::Bencher) {
         &( Add(Arbitrary::arbitrary(gen))
          , Mul(Arbitrary::arbitrary(gen)) );
     let task = || {
-        a.op(b)
+        a.app(b)
     };
     bencher.iter(task);
 }
 
 #[bench]
-fn pownz_naive(bencher:&mut test::Bencher) {
+fn rep_one_naive(bencher:&mut test::Bencher) {
     let rng = util::seeded_rng();
     let gen = &mut quickcheck::gen(rng, quickcheck::DEFAULT_SIZE);
     let a: (Add<f64>,Mul<f64>) =
         ( Add(Arbitrary::arbitrary(gen))
         , Mul(Arbitrary::arbitrary(gen)) );
     let task = || {
-        util::pownz_naive(a, ITERATIONS)
+        util::rep_one_naive(a, ITERATIONS)
     };
     bencher.iter(task);
 }
 
 #[bench]
-fn pownz(bencher:&mut test::Bencher) {
+fn rep_one(bencher:&mut test::Bencher) {
     let rng = util::seeded_rng();
     let gen = &mut quickcheck::gen(rng, quickcheck::DEFAULT_SIZE);
     let a: (Add<f64>,Mul<f64>) =
@@ -69,31 +69,31 @@ fn pownz(bencher:&mut test::Bencher) {
         , Mul(Arbitrary::arbitrary(gen)) );
     // println!("{}", a);
     let task = || {
-        a.pownz(ITERATIONS)
+        a.rep_one(ITERATIONS)
     };
     bencher.iter(task);
 }
 
 #[bench]
-fn product_naive(bencher:&mut test::Bencher) {
+fn cat_one_naive(bencher:&mut test::Bencher) {
     let rng = util::seeded_rng();
     let gen = &mut quickcheck::gen(rng, ITERATIONS);
     let xs: Vec<(f64,f64)> = Arbitrary::arbitrary(gen);
     let mut it = xs.into_iter().map(|(x,y)| (Add(x),Mul(y)));
     let task = || {
-        util::product_naive(&mut it, ELEM)
+        util::cat_one_naive(&mut it, ELEM)
     };
     bencher.iter(task);
 }
 
 #[bench]
-fn product(bencher:&mut test::Bencher) {
+fn cat_one(bencher:&mut test::Bencher) {
     let rng = util::seeded_rng();
     let gen = &mut quickcheck::gen(rng, ITERATIONS);
     let xs: Vec<(f64,f64)> = Arbitrary::arbitrary(gen);
     let mut it = xs.into_iter().map(|(x,y)| (Add(x),Mul(y)));
     let task = || {
-        it.product(ELEM)
+        it.cat_one(ELEM)
     };
     bencher.iter(task);
 }

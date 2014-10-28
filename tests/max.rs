@@ -23,7 +23,7 @@ use semigroup::{
     Max,
     S,
     SemigroupIterator,
-    SemigroupPowNonZero,
+    SemigroupReplicate,
 };
 
 // custom mods
@@ -33,24 +33,24 @@ mod util;
 const ITERATIONS: uint = 10000u;
 
 #[quickcheck]
-fn op_associative(a:uint, b:uint, c:uint) -> bool {
+fn app_associative(a:uint, b:uint, c:uint) -> bool {
     S(Max(a)) * (S(Max(b)) * S(Max(c))) == (S(Max(a)) * S(Max(b))) * S(Max(c))
 }
 
 #[quickcheck]
-fn op_sound(a:uint, b:uint) -> bool {
+fn app_sound(a:uint, b:uint) -> bool {
     S(Max(a)) * S(Max(b)) == S(Max(cmp::max(a,b)))
 }
 
 #[quickcheck]
-fn pownz_equiv_naive(a:uint) -> bool {
+fn rep_one_equiv_naive(a:uint) -> bool {
     let g = &mut gen(rand::task_rng(), ITERATIONS);
     let n = Arbitrary::arbitrary(g);
-    Max(a).pownz(n) == util::pownz_naive(Max(a), n)
+    Max(a).rep_one(n) == util::rep_one_naive(Max(a), n)
 }
 
 #[quickcheck]
-fn product_equiv_naive(a:uint, n:uint) -> bool {
+fn cat_one_equiv_naive(a:uint, n:uint) -> bool {
     let mut it = iter::Repeat::new(Max(a)).take(n);
-    it.clone().product(Max(a)) == util::product_naive(&mut it, Max(a))
+    it.clone().cat_one(Max(a)) == util::cat_one_naive(&mut it, Max(a))
 }

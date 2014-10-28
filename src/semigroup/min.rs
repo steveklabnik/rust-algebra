@@ -18,7 +18,7 @@ impl<A> Semigroup for Min<A>
         A:Ord,
 {
     #[inline]
-    fn op(&self, rhs:&Min<A>) -> Min<A> {
+    fn app(&self, rhs:&Min<A>) -> Min<A> {
         let Min(lhs) = (*self).clone();
         let Min(rhs) = (*rhs ).clone();
         Min(cmp::min(lhs, rhs))

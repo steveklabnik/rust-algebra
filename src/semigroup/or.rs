@@ -14,7 +14,7 @@ pub struct Or(pub bool);
 impl Semigroup for Or
 {
     #[inline]
-    fn op(&self, rhs:&Or) -> Or {
+    fn app(&self, rhs:&Or) -> Or {
         let Or(lhs) = *self;
         let Or(rhs) = *rhs;
         Or(lhs || rhs)

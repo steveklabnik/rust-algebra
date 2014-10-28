@@ -18,7 +18,7 @@ impl<A> Semigroup for Max<A>
         A:Ord,
 {
     #[inline]
-    fn op(&self, rhs:&Max<A>) -> Max<A> {
+    fn app(&self, rhs:&Max<A>) -> Max<A> {
         let Max(lhs) = (*self).clone();
         let Max(rhs) = (*rhs ).clone();
         Max(cmp::max(lhs, rhs))

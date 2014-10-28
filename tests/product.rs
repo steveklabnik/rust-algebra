@@ -24,7 +24,7 @@ use semigroup::{
     S,
     Semigroup,
     SemigroupIterator,
-    SemigroupPowNonZero,
+    SemigroupReplicate,
 };
 
 // custom mods
@@ -34,7 +34,7 @@ mod util;
 const ITERATIONS: uint = 10000u;
 
 #[quickcheck]
-fn op_associative(a:(uint,uint), b:(uint,uint), c:(uint,uint)) -> bool {
+fn app_associative(a:(uint,uint), b:(uint,uint), c:(uint,uint)) -> bool {
     let (al, ar) = a;
     let (bl, br) = b;
     let (cl, cr) = c;
@@ -45,27 +45,27 @@ fn op_associative(a:(uint,uint), b:(uint,uint), c:(uint,uint)) -> bool {
 }
 
 #[quickcheck]
-fn op_sound(a:(uint,uint), b:(uint,uint)) -> bool {
+fn app_sound(a:(uint,uint), b:(uint,uint)) -> bool {
     let (al, ar) = a;
     let (bl, br) = b;
     let a = (Add(al), Mul(ar));
     let b = (Add(bl), Mul(br));
-    S(a) * S(b) == S((a.0.op(&b.0), a.1.op(&b.1)))
+    S(a) * S(b) == S((a.0.app(&b.0), a.1.app(&b.1)))
 }
 
 #[quickcheck]
-fn pownz_equiv_naive(a:(uint,uint)) -> bool {
+fn rep_one_equiv_naive(a:(uint,uint)) -> bool {
     let (al, ar) = a;
     let a = (Add(al), Mul(ar));
     let g = &mut gen(rand::task_rng(), ITERATIONS);
     let n = Arbitrary::arbitrary(g);
-    a.pownz(n) == util::pownz_naive(a, n)
+    a.rep_one(n) == util::rep_one_naive(a, n)
 }
 
 #[quickcheck]
-fn product_equiv_naive(a:(uint,uint), n:uint) -> bool {
+fn cat_one_equiv_naive(a:(uint,uint), n:uint) -> bool {
     let (al, ar) = a;
     let a = (Add(al), Mul(ar));
     let mut it = iter::Repeat::new(a).take(n);
-    it.clone().product(a) == util::product_naive(&mut it, a)
+    it.clone().cat_one(a) == util::cat_one_naive(&mut it, a)
 }

@@ -14,7 +14,7 @@ impl<A> Semigroup for Snd<A>
         A:Clone,
 {
     #[inline]
-    fn op(&self, rhs:&Snd<A>) -> Snd<A> {
+    fn app(&self, rhs:&Snd<A>) -> Snd<A> {
         (*rhs).clone()
     }
 }
