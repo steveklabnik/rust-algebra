@@ -1,10 +1,10 @@
-# rust-semigroup
+# rust-algebra
 
-Semigroups in Rust
+Abstract Algebra in Rust
 
 ## Synopsis
 
-This library implements `Semigroup` and related traits. Semigroups are mathematical structures with an associative operation (e.g., `(+)`, `(*)`, `(&&)`, `(||)`, …).
+This library implements `Monoid`, `Semigroup` and related traits. Semigroups are mathematical structures with an associative operation (e.g., `(+)`, `(*)`, `(&&)`, `(||)`, …).
 
 The design of this library is roughly fashioned after Kmett's [semigroups](https://github.com/ekmett/semigroups/) for Haskell.
 
