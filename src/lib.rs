@@ -1,6 +1,9 @@
 #![crate_name="algebra"]
 #![crate_type="lib"]
 
+#![license = "MIT"]
+#![doc(html_root_url = "http://darinmorrison.github.io/rust-algebra/doc/algebra/")]
+
 #![feature(phase)]
 
 //! This crate defines traits for working with

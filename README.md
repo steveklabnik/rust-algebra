@@ -8,6 +8,10 @@ This library implements `Semigroup` and related traits. Semigroups are mathemati
 
 The design of this library is roughly fashioned after Kmett's [semigroups](https://github.com/ekmett/semigroups/) for Haskell.
 
+## Documentation
+
+See the API documentation [here](http://darinmorrison.github.io/rust-algebra/doc/algebra/).
+
 ## Requirements
 
 1.   [Rust](http://www.rust-lang.org/)
