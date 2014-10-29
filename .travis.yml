@@ -3,7 +3,7 @@ os:
     - linux
 env:
     global:
-        - secure: J7L/6+Tgg6t5gLpziHyr9A05sgUEE5u49WXLGtkGQTOIghVryAwEdRRuFZ6Wn2jTrL/mA7bISWG82F3UowaDY4YvsxL/3uxcgpwKvRmqpauTG/FY0T/UBhA9vK+qtaWEY9MvifhI39nw2xYkymzdMPMFKbXj6jsFNdugw3OZb2k=
+        - secure: J6Vvama5ywtq2ugeQUNEGHFIf45fm4kkpfQqdVpX6LrVn466uRJpqqoBL+o1rY9t66cmnKHVUy7bMZILG8S41TBcy8LSqplLlx3yykspIzZGruoAxXkmLzyW710JCNa5M9kwaBVHAhbhmB0Le8cynfxgL0TvCfNct4Tl8ppEZqA=
 script:
     - cargo build -v
     - cargo test  -v
