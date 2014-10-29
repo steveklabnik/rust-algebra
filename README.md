@@ -2,6 +2,8 @@
 
 Abstract Algebra in Rust
 
+[![build status](https://api.travis-ci.org/darinmorrison/rust-algebra.svg?branch=master)](https://travis-ci.org/darinmorrison/rust-algebra)
+
 ## Synopsis
 
 This library implements `Monoid`, `Semigroup` and related traits. Semigroups are mathematical structures with an associative operation (e.g., `(+)`, `(*)`, `(&&)`, `(||)`, …).
