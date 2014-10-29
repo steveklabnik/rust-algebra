@@ -1,7 +1,6 @@
 language: rust
 os:
     - linux
-    - osx
 env:
     global:
         - secure: J7L/6+Tgg6t5gLpziHyr9A05sgUEE5u49WXLGtkGQTOIghVryAwEdRRuFZ6Wn2jTrL/mA7bISWG82F3UowaDY4YvsxL/3uxcgpwKvRmqpauTG/FY0T/UBhA9vK+qtaWEY9MvifhI39nw2xYkymzdMPMFKbXj6jsFNdugw3OZb2k=
