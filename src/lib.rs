@@ -7,7 +7,7 @@
 #![feature(phase)]
 
 //! This crate defines traits for working with
-//! [structures]([algebraic structure](http://en.wikipedia.org/wiki/Algebraic_structure))
+//! [structures](http://en.wikipedia.org/wiki/Algebraic_structure)
 //! from [abstract algebra](http://en.wikipedia.org/wiki/Abstract_algebra),
 //! such as [semigroups](http://en.wikipedia.org/wiki/Semigroup),
 //! [monoids](http://en.wikipedia.org/wiki/Monoid), etc.
