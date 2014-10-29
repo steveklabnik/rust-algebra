@@ -1,12 +1,12 @@
 // external imports
-use semigroup::theory::{
-    Semigroup,
-};
 use std::collections::{
     RingBuf,
 };
 
 // local imports
+use semigroup::theory::{
+    Semigroup,
+};
 
 impl<A> Semigroup for RingBuf<A>
     where
